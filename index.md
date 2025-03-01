@@ -1,4 +1,7 @@
 ---
-title: Welcome to my blog
+title: My page
+===
+Some stuff goes here
 ---
+
 
