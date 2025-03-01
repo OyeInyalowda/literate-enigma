@@ -1,5 +1,5 @@
 ---
-title: My page
+My page
 ===
 Some stuff goes here
 ---
