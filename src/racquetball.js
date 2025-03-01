@@ -15,7 +15,7 @@ function setup() {
 }
 
 function draw() {
-  background(0, 0, 0);
+  background(25);
   game.play();
   text("Score:" + game.getScore(), 5, 15);
 }
