@@ -1,7 +1,6 @@
 ---
-My page
-===
-Some stuff goes here
+title: "My page"
 ---
-
+Some stuff about things
+=====
 
