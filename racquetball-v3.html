@@ -7,15 +7,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Racquetball</title>
+    <title>Racquetball, Version 3</title>
 
     <style>
       body {background-color:#000000; 
       font-family:arial, helvetica, sans-serif; 
       margin-top:0px}
       
-      h2 {color:#999999; font-size: 1.5em; margin-left:3em;}
-      ul {color:#ffffff; font-size: 1.5em; margin-left:3em;}
+      h2 {color:#999999; font-size: 1.3em; margin-left:1em;}
+      ul {color:#ffffff; font-size: 1em; margin-left:1em;}
       
       a {text-decoration: none;}
       a:link {color: #ffffff;}
@@ -46,16 +46,23 @@
 
     <script src="src/racquetball-v3.js"></script>
 
-    <h2>Original Racquetball Specifications</h2>
+    <div id="game-container"></div>
 
-    <ul style="font-size: 1em; margin-left:3em;">
-      <li>The player controls a tall and thin rectangle on the right side of the screen. 
-        They may move it up and down with the arrow keys, but not left and right.</li>
-      <li>A ball will be launched from the left side of the screen towards the right, at a diagonal.</li>
-      <li>The player will try to bounce the ball back towards the left side of the screen. Every time they do, they get a point.</li>
-      <li>If the player misses the ball and it goes beyond the right side of the screen, the player loses a point. The ball will then be launched again from the left side of the screen.</li>
-      <li>The ball should bounce off of the top and bottom and left side of the screen.</li>
-      <li>Display the score at the top left of the screen using the text() function.</li>
+    <h2>Added Features</h2>
+    <ul>
+      <li>Added Pause / Unpause</li>
+      <li>Added Pause Screen</li>
+      <li>Added Round High Score</li>
+      <li>Added racquet 'guide' to right side of arena</li>
+      <li>Increased arena size, ball speed, and racquet speed</li>
+      <li>New colors</li>
+    </ul>
+
+    <h2>Future Features</h2>
+    <ul>
+      <li>Persistent high scores with user names</li>
+      <li>New Mode: Ball speed increases gradually with score</li> 
+      <li>Game over</li>
     </ul>
 
   </body>

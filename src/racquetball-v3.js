@@ -7,9 +7,8 @@
 
 /**
  * TODO List
- * 1. Pause functionality - partially implemented
- * 2. Game does not start until the player moves
- * 3. Game does not start until the player moves after reset
+ * 1. Pause functionality - DONE
+ * 2. Game does not start until the player moves - DONE
  * 4. Increase frame size - DONE
  * 5. Add 'guide' for the racquet - DONE
  * 
@@ -17,28 +16,55 @@
  * 1. Implement lives and game over mechanic
  * 2. Increase ball speed with score
  * 3. Maybe change some colors on bounce or return
- * 
  */
 
-let racquet;
-let ball;
+// racquet and ball starting params
+let startX;
+let maxVel;
+let diam;
+let startWidth;
+let startHeight;
+let startSpeed;
 let game;
+let started;
 
 function setup() {
-  createCanvas(800, 600);
+  let canvas = createCanvas(800, 600);
+  canvas.parent('game-container');
+
+  // racquet and ball starting params
+  startX = 0;
+  maxVel = 10;
+  diam = 15;
+  startWidth = 10;
+  startHeight = 75;
+  startSpeed = 9;
+
   game = new Game();
+  started = false; // game not started by default
 }
 
 function draw() {
-  background(25);
+  background('#3F4C4E');
   game.play();
-  text("Score:" + game.getScore(), 5, 15);
+
+  if(!started) {
+    game.pause();
+  }
+
 }
 
 /**
  * Class representing a racquet for the Racquetball game.
  */
 class Racquet {
+  /**
+   * Explicit value constructor.
+   * @param {number} racY starting y-value
+   * @param {number} racWidth racquet width
+   * @param {number} racHeight racquet height
+   * @param {number} speed racquet speed
+   */
   constructor(racY, racWidth, racHeight, speed) {
     this.racY = racY;
     this.racWidth = racWidth;
@@ -53,11 +79,12 @@ class Racquet {
   show() {
     noStroke();
     // racquet guide
-    fill(50, 50, 101);
+    fill('#A19F9E');
     rect((width - this.racWidth / 2), (height / 2), this.racWidth, height)
 
     // racquet
-    fill(242, 240, 101);
+    stroke(0);
+    fill('#623543');
     rect((width - this.racWidth / 2), this.racY, this.racWidth, this.racHeight);
   }
 
@@ -118,6 +145,14 @@ class Racquet {
  * Class representing a ball for the Racquetball game.
  */
 class Ball {
+  /**
+   * Explicit value constructor.
+   * @param {number} ballX starting x-value
+   * @param {number} ballY starting y-value
+   * @param {number} ballDiam diameter of ball
+   * @param {number} xVel starting x-velocity
+   * @param {number} yVel starting y-velocity 
+   */
   constructor(ballX, ballY, ballDiam, xVel, yVel) {
     this.ballX = ballX;
     this.ballY = ballY;
@@ -130,8 +165,8 @@ class Ball {
    * Displays the ball.
    */
   show() {
-    stroke(0, 0, 0);
-    fill(225, 75, 75)
+    stroke(0);
+    fill('#8B9B4B')
     circle(this.ballX, this.ballY, this.ballDiam);
   }
 
@@ -220,11 +255,18 @@ class Ball {
  */
 class Game {
   constructor() {
-    let randomVel = random(-7, 7);
-    let randomY = random(50, 350)
+    // game and pause
+    this.paused = false;
+    this.highScore = 0;
     this.score = 0;
-    this.racquet = new Racquet(200, 10, 75, 5);
-    this.ball = new Ball(7, randomY, 15, 10, randomVel);
+    let oldXVel = 0;
+    let oldYVel = 0;
+    let oldSpeed = 0;
+ 
+    // racquet and ball
+    this.racquet = new Racquet((height / 2), startWidth, startHeight, startSpeed);
+    this.ball = new Ball(startX, random(0, height), diam, maxVel, random(-maxVel, maxVel));
+    // play area bounds
     this.leftBound = 0;
     this.rightBound = width;
     this.upperBound = 0;
@@ -235,6 +277,9 @@ class Game {
    * Runs a game of racquetball.
    */
   play() {
+    // Show score
+    this.showScore();
+
     // show and move racquet
     this.racquet.show();
     this.racquet.move();
@@ -259,6 +304,14 @@ class Game {
         this.reset();
       }
     }
+
+    // pause screen condition
+    if(this.isPaused()) {
+      this.pauseScreen();
+    }
+
+    // set high score
+    this.setHighScore();
   }
 
   /**
@@ -278,6 +331,15 @@ class Game {
   }
 
   /**
+   * Sets the high score.
+   */
+  setHighScore() {
+    if(this.score > this.highScore) {
+      this.highScore = this.score;
+    }
+  }
+
+  /**
    * Returns player score.
    * @returns {number} score
    */
@@ -286,23 +348,135 @@ class Game {
   }
 
   /**
+   * Returns player high score.
+   * @returns high score
+   */
+  getHighScore() {
+    return this.highScore;
+  }
+
+  /**
    * Resets the position and velocity of the ball.
    */
   reset() {
-    let randomVel = random(-5, 5);
-    let randomY = random(50, 350);
-    this.ball = new Ball(7, randomY, 15, 10, randomVel);
+    this.ball = new Ball(startX, random(0, height), diam, maxVel, random(-maxVel, maxVel));
   }
 
+  /**
+   * Pauses the game.
+   */
   pause() {
-    // keep track of current values
-    oldXVel = this.ball.getXVel();
-    oldYVel = this.ball.getYVel();
-    oldSpeed = this.racquet.getSpeed();
+    if(!this.paused) {
+      // keep track of current values
+      this.oldXVel = this.ball.getXVel();
+      this.oldYVel = this.ball.getYVel();
+      this.oldSpeed = this.racquet.getSpeed();
+  
+      // set velocities to zero
+      this.ball.setXVel(0);
+      this.ball.setYVel(0);
+      this.racquet.setSpeed(0);
+    }
 
-    // set velocities to zero
-    this.ball.setXVel(0);
-    this.ball.setYVel(0);
-    this.racquet.setSpeed(0);
+    this.paused = true;
+
+    console.log("Game paused.");
+  }
+
+  /**
+   * Unpauses the game.
+   */
+  unpause() {
+    // set to old values
+    this.ball.setXVel(this.oldXVel);
+    this.ball.setYVel(this.oldYVel);
+    this.racquet.setSpeed(this.oldSpeed);
+
+    this.paused = false;
+    started = true; // set started to true after first unpause
+
+    console.log("Game unpaused");
+  }
+
+  /**
+   * Returns true if the game is paused.
+   * @returns paused
+   */
+  isPaused() {
+    return this.paused;
+  }
+
+  /**
+   * Displays a pause screen.
+   */
+  pauseScreen() {
+    // pause frame vars
+    let frameCenterX = width / 2;
+    let frameCenterY = height / 2;
+    let frameWidth = 650;
+    let frameHeight = 450;
+
+    // pause frame
+    fill(55, 100);
+    rect(frameCenterX, frameCenterY, frameWidth, frameHeight);
+
+    // Game Rules
+    fill('#F6F4F1');
+    textSize(13);
+    textStyle(NORMAL);
+    textAlign(LEFT, TOP);
+    text("Rules:", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY + 3) - (frameHeight / 2)));
+    text("1. Deflecting the ball scores a point", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY + 18) - (frameHeight / 2)))
+    text("2. Missing the ball deducts a point", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY + 36) - (frameHeight / 2)))
+
+    // "Game Paused" text
+    textSize(25);
+    textStyle(BOLD);
+    textAlign(CENTER, CENTER);
+    text("Game Paused", frameCenterX, frameCenterY);
+    textSize(13);
+    textStyle(NORMAL);
+    text("Current Score: " + this.getScore() + " | High Score: " + this.getHighScore(), frameCenterX, (frameCenterY + 36));
+
+    // Controls
+    textSize(13);
+    textStyle(NORMAL);
+    textAlign(LEFT, BOTTOM);
+    text("Down Arrow - Move Racquet Down", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 3) + (frameHeight / 2)));
+    text("Up Arrow - Move Racquet Up", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 18) + (frameHeight / 2)));
+    text("Escape - Pause / Unpause", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 36) + (frameHeight / 2)));
+    text("Reset Game (when unpaused):", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 54) + (frameHeight / 2)));
+    text("Controls:", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 72) + (frameHeight / 2)));
+
+  }
+
+  /**
+   * Displays player score
+   */
+  showScore() {
+    fill('#F6F4F1');
+    textSize(13);
+    textStyle(NORMAL);
+    textAlign(LEFT, CENTER);
+    text("Score: " + this.getScore() + " | High Score: " + this.getHighScore(), 5, 15);
+  }
+
+  fullReset() {
+    this.reset();
+    started = false;
+    this.score = 0;
+    this.highScore = 0;
+    started = false;
+  }
+}
+
+function keyPressed() {
+  if(keyCode == 27 && game.isPaused() == false) {
+    game.pause();
+  } else if(keyCode == 27 && game.isPaused() == true) {
+    game.unpause();
+  } else if(key == "`" && game.isPaused() == false) {
+    game.fullReset();
+    console.log("Game reset.")
   }
 }
