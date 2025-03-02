@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!-- NAME: OyeInyalowda
+	Prog Purpose: Page demonstrating a racquetball game created for a software engineering course at James Madison University.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Racquetball</title>
+
+    <style>
+      body {background-color:#000000; 
+      font-family:arial, helvetica, sans-serif; 
+      margin-top:0px}
+      
+      h2 {color:#999999; font-size: 1.5em; margin-left:3em;}
+      ul {color:#ffffff; font-size: 1.5em; margin-left:3em;}
+      
+      a {text-decoration: none;}
+      a:link {color: #ffffff;}
+      a:visited {color: #999999;}
+      a:hover {color: #003820;}
+      a:active {color: #6090f0;}
+      
+      table {width: 800px; font-size: 1.3em; font-weight:bold; 
+      background-color: #000000; color: #ffffff}
+      
+      td {width:200px;}
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="libraries/p5.min.js"></script>
+    <script src="libraries/p5.sound.min.js"></script>
+  </head>
+
+  <body>
+    <table style = 'width: 100%; font-size: 1.3em; font-weight: bold; background-color: #000000; 
+    color: #ffffff; border-style: hidden;'>
+    <tr>
+      <td><a href='index.html'> Home </a></td>
+      <td><a href='https://www.w3schools.com/html/'> W3 Schools </a></td>    
+    </tr>
+    </table>
+
+    <script src="src/racquetball-v3.js"></script>
+
+    <h2>Original Racquetball Specifications</h2>
+
+    <ul style="font-size: 1em; margin-left:3em;">
+      <li>The player controls a tall and thin rectangle on the right side of the screen. 
+        They may move it up and down with the arrow keys, but not left and right.</li>
+      <li>A ball will be launched from the left side of the screen towards the right, at a diagonal.</li>
+      <li>The player will try to bounce the ball back towards the left side of the screen. Every time they do, they get a point.</li>
+      <li>If the player misses the ball and it goes beyond the right side of the screen, the player loses a point. The ball will then be launched again from the left side of the screen.</li>
+      <li>The ball should bounce off of the top and bottom and left side of the screen.</li>
+      <li>Display the score at the top left of the screen using the text() function.</li>
+    </ul>
+
+  </body>
+</html>
