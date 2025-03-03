@@ -42,6 +42,13 @@ function setup() {
 
   game = new Game();
   started = false; // game not started by default
+
+  // prevent default behavior
+  window.addEventListener("keydown", function(e) {
+    if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+      e.preventDefault();
+    }
+  }, false);
 }
 
 function draw() {

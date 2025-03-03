@@ -13,6 +13,13 @@ function setup() {
   let canvas = createCanvas(600, 400);
   canvas.parent('game-container');
   game = new Game();
+  
+  // prevent default behavior
+  window.addEventListener("keydown", function(e) {
+    if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+      e.preventDefault();
+    }
+  }, false);
 }
 
 function draw() {
