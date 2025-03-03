@@ -7,27 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Racquetball</title>
-
-    <style>
-      body {background-color:#000000; 
-      font-family:arial, helvetica, sans-serif; 
-      margin-top:0px}
-      
-      h2 {color:#999999; font-size: 1.5em; margin-left:3em;}
-      ul {color:#ffffff; font-size: 1.5em; margin-left:3em;}
-      
-      a {text-decoration: none;}
-      a:link {color: #ffffff;}
-      a:visited {color: #999999;}
-      a:hover {color: #003820;}
-      a:active {color: #6090f0;}
-      
-      table {width: 800px; font-size: 1.3em; font-weight:bold; 
-      background-color: #000000; color: #ffffff}
-      
-      td {width:200px;}
-    </style>
+    <title>Racquetball, Version 2</title>
 
     <link rel="stylesheet" type="text/css" href="style.css">
 
@@ -36,19 +16,22 @@
   </head>
 
   <body>
-    <table style = 'width: 100%; font-size: 1.3em; font-weight: bold; background-color: #000000; 
-    color: #ffffff; border-style: hidden;'>
-    <tr>
-      <td><a href='index.html'> Home </a></td>
-      <td><a href='https://www.w3schools.com/html/'> W3 Schools </a></td>    
-    </tr>
-    </table>
+
+    <table>
+      <tr>
+        <td><a href='index.html'> Home </a></td>
+        <td><a href="https://github.com/OyeInyalowda/literate-enigma">Projects Repository</a></td>
+        <td><a href='https://www.w3schools.com/'> W3 Schools </a></td>	
+      </tr>
+      </table>
+
+    <h2>Racquetball Version 2</h2>
 
     <script src="src/racquetball.js"></script>
+    <div id="game-container"></div>
 
-    <h2>Original Racquetball Specifications</h2>
-
-    <ul style="font-size: 1em; margin-left:3em;">
+    <h3>Original Specifications</h3>
+    <ul>
       <li>The player controls a tall and thin rectangle on the right side of the screen. 
         They may move it up and down with the arrow keys, but not left and right.</li>
       <li>A ball will be launched from the left side of the screen towards the right, at a diagonal.</li>

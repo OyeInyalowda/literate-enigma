@@ -55,3 +55,7 @@ table {
 td {
     width: 2em;
 }
+
+div {
+    margin: .5em;
+}
