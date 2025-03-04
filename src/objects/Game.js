@@ -1,15 +1,17 @@
 /**
  * Class that manages the Racquetball game.
  */
+let customBallSpeed, customRacquetSpeed;
+
 class Game {
     constructor() {
       // game and pause
       this.paused = false;
       this.highScore = 0;
       this.score = 0;
-      let oldXVel = 0;
-      let oldYVel = 0;
-      let oldSpeed = 0;
+      this.oldXVel = 0;
+      this.oldYVel = 0;
+      this.oldSpeed = 0;
    
       // racquet and ball
       this.racquet = new Racquet((height / 2), startWidth, startHeight, startSpeed);
@@ -195,7 +197,6 @@ class Game {
       text("Escape - Pause / Unpause", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 36) + (frameHeight / 2)));
       text("Reset Game (when unpaused):", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 54) + (frameHeight / 2)));
       text("Controls:", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 72) + (frameHeight / 2)));
-  
     }
   
     /**
@@ -209,6 +210,9 @@ class Game {
       text("Score: " + this.getScore() + " | High Score: " + this.getHighScore(), 5, 15);
     }
   
+    /**
+     * Resets the whole game
+     */
     fullReset() {
       this.reset();
       started = false;
