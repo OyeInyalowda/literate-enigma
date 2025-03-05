@@ -1,14 +1,15 @@
 /**
  * Class that manages the Racquetball game.
  */
-let customBallSpeed, customRacquetSpeed;
-
 class Game {
     constructor() {
-      // game and pause
-      this.paused = false;
+      // game values
+      this.lives = MAX_LIVES;
       this.highScore = 0;
       this.score = 0;
+      this.outOfLives = false;
+      // pause values
+      this.paused = false;
       this.oldXVel = 0;
       this.oldYVel = 0;
       this.oldSpeed = 0;
@@ -16,6 +17,7 @@ class Game {
       // racquet and ball
       this.racquet = new Racquet((height / 2), startWidth, startHeight, startSpeed);
       this.ball = new Ball(startX, random(0, height), diam, maxVel, random(-maxVel, maxVel));
+      this.ui = new UserInterface();
       // play area bounds
       this.leftBound = 0;
       this.rightBound = width;
@@ -27,9 +29,12 @@ class Game {
      * Runs a game of racquetball.
      */
     play() {
-      // Show score
-      this.showScore();
-  
+      if(!this.started) {
+        game.pause();
+      } 
+      if(this.outOfLives) {
+        game.gameOver();
+      }  
       // show and move racquet
       this.racquet.show();
       this.racquet.move();
@@ -37,7 +42,27 @@ class Game {
       // show and move ball
       this.ball.show();
       this.ball.move();
+
+      // bounce ball off bounds
+      this.boundary();
   
+      // if isPaused(), show pause screen. Else, show score in top left.
+      if(this.isOver()) {
+        this.ui.gameOverScreen();
+      } else if(this.isPaused()) {
+        this.ui.pauseScreen();
+      } else {
+        this.ui.showScore();
+      }
+  
+      // set high score
+      this.setHighScore();
+    }
+
+    /**
+     * Bounces the ball off game boundaries
+     */
+    boundary() {
       // ball bounce conditions
       if(this.ball.getY() <= this.upperBound || this.ball.getY() >= this.lowerBound) {
         this.ball.bounceY();
@@ -50,18 +75,11 @@ class Game {
           this.ball.bounceX();
           this.increaseScore();
         } else {
+          this.loseLife();
           this.decreaseScore();
           this.reset();
         }
       }
-  
-      // pause screen condition
-      if(this.isPaused()) {
-        this.pauseScreen();
-      }
-  
-      // set high score
-      this.setHighScore();
     }
   
     /**
@@ -106,13 +124,6 @@ class Game {
     }
   
     /**
-     * Resets the position and velocity of the ball.
-     */
-    reset() {
-      this.ball = new Ball(startX, random(0, height), diam, maxVel, random(-maxVel, maxVel));
-    }
-  
-    /**
      * Pauses the game.
      */
     pause() {
@@ -143,7 +154,7 @@ class Game {
       this.racquet.setSpeed(this.oldSpeed);
   
       this.paused = false;
-      started = true; // set started to true after first unpause
+      this.started = true; // set started to true after first unpause
   
       console.log("Game unpaused");
     }
@@ -157,67 +168,43 @@ class Game {
     }
   
     /**
-     * Displays a pause screen.
+     * Resets the position and velocity of the ball.
      */
-    pauseScreen() {
-      // pause frame vars
-      let frameCenterX = width / 2;
-      let frameCenterY = height / 2;
-      let frameWidth = 650;
-      let frameHeight = 450;
-  
-      // pause frame
-      fill(55, 100);
-      rect(frameCenterX, frameCenterY, frameWidth, frameHeight);
-  
-      // Game Rules
-      fill('#F6F4F1');
-      textSize(13);
-      textStyle(NORMAL);
-      textAlign(LEFT, TOP);
-      text("Rules:", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY + 3) - (frameHeight / 2)));
-      text("1. Deflecting the ball scores a point", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY + 18) - (frameHeight / 2)))
-      text("2. Missing the ball deducts a point", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY + 36) - (frameHeight / 2)))
-  
-      // "Game Paused" text
-      textSize(25);
-      textStyle(BOLD);
-      textAlign(CENTER, CENTER);
-      text("Game Paused", frameCenterX, frameCenterY);
-      textSize(13);
-      textStyle(NORMAL);
-      text("Current Score: " + this.getScore() + " | High Score: " + this.getHighScore(), frameCenterX, (frameCenterY + 36));
-  
-      // Controls
-      textSize(13);
-      textStyle(NORMAL);
-      textAlign(LEFT, BOTTOM);
-      text("Down Arrow - Move Racquet Down", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 3) + (frameHeight / 2)));
-      text("Up Arrow - Move Racquet Up", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 18) + (frameHeight / 2)));
-      text("Escape - Pause / Unpause", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 36) + (frameHeight / 2)));
-      text("Reset Game (when unpaused):", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 54) + (frameHeight / 2)));
-      text("Controls:", ((frameCenterX + 3) - (frameWidth / 2)), ((frameCenterY - 72) + (frameHeight / 2)));
+    reset() {
+      this.ball = new Ball(startX, random(0, height), diam, maxVel, random(-maxVel, maxVel));
     }
-  
-    /**
-     * Displays player score
-     */
-    showScore() {
-      fill('#F6F4F1');
-      textSize(13);
-      textStyle(NORMAL);
-      textAlign(LEFT, CENTER);
-      text("Score: " + this.getScore() + " | High Score: " + this.getHighScore(), 5, 15);
-    }
-  
+
     /**
      * Resets the whole game
      */
     fullReset() {
       this.reset();
-      started = false;
       this.score = 0;
       this.highScore = 0;
-      started = false;
+      this.lives = MAX_LIVES;
+      this.unpause();
+      this.outOfLives = false;
+      this.started = false;
+    }
+
+    loseLife() {
+      if(this.lives > 1) {
+        this.lives--;
+        console.log("Life lost");
+      } else {
+        this.outOfLives = true;
+      }
+    }
+
+    isOver() {
+      return this.outOfLives;
+    }
+
+    gameOver() {
+      // set velocities to zero
+      this.ball.setXVel(0);
+      this.ball.setYVel(0);
+      this.racquet.setSpeed(0);
+      console.log("gameOver()")
     }
   }

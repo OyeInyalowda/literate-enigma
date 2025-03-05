@@ -2,23 +2,19 @@
  * Racquetball v3, now with more objects.
  * 
  * @author Mike Vance
- * @version 01MAR25
+ * @version 05MAR25
  */
 
 /**
  * TODO List
- * 1. Pause functionality - DONE
- * 2. Game does not start until the player moves - DONE
- * 4. Increase frame size - DONE
- * 5. Add 'guide' for the racquet - DONE
  * 
  * Possible Features
- * 1. Implement lives and game over mechanic
  * 2. Increase ball speed with score
  * 3. Maybe change some colors on bounce or return
  */
 
 // racquet and ball starting params
+const MAX_LIVES = 5;
 let startX;
 let maxVel;
 let diam;
@@ -26,7 +22,7 @@ let startWidth;
 let startHeight;
 let startSpeed;
 let game;
-let started;
+//let started;
 
 function setup() {
   let canvas = createCanvas(800, 600);
@@ -41,7 +37,7 @@ function setup() {
   startSpeed = 9;
 
   game = new Game();
-  started = false; // game not started by default
+  //started = false; // game not started by default
 
   // prevent default behavior
   window.addEventListener("keydown", function(e) {
@@ -54,19 +50,17 @@ function setup() {
 function draw() {
   background('#3F4C4E');
   game.play();
-
-  if(!started) {
-    game.pause();
-  }
-
 }
 
 function keyPressed() {
-  if(keyCode == 27 && game.isPaused() == false) {
+  if(game.isOver() == true && keyCode == 27) {
+    game.fullReset();
+    console.log("Game over, reset.");
+  } else if(keyCode == 27 && game.isPaused() == false) {
     game.pause();
   } else if(keyCode == 27 && game.isPaused() == true) {
     game.unpause();
-  } else if(key == "`" && game.isPaused() == false) {
+  } else if(key == "`") {
     game.fullReset();
     console.log("Game reset.")
   }
