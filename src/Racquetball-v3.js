@@ -48,7 +48,7 @@ function setup() {
 }
 
 function draw() {
-  background('#3F4C4E');
+  background('#2c3b52');
   game.play();
 }
 
