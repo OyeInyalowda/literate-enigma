@@ -62,7 +62,7 @@ class UserInterface {
         text("Down Arrow - Move Racquet Down", ((this.frameCenterX + 3) - (this.frameWidth / 2)), ((this.frameCenterY - 3) + (this.frameHeight / 2)));
         text("Up Arrow - Move Racquet Up", ((this.frameCenterX + 3) - (this.frameWidth / 2)), ((this.frameCenterY - 18) + (this.frameHeight / 2)));
         text("Escape - Pause / Unpause", ((this.frameCenterX + 3) - (this.frameWidth / 2)), ((this.frameCenterY - 36) + (this.frameHeight / 2)));
-        text("Reset Game (when unpaused):", ((this.frameCenterX + 3) - (this.frameWidth / 2)), ((this.frameCenterY - 54) + (this.frameHeight / 2)));
+        text("~ - Reset Game:", ((this.frameCenterX + 3) - (this.frameWidth / 2)), ((this.frameCenterY - 54) + (this.frameHeight / 2)));
         text("Controls:", ((this.frameCenterX + 3) - (this.frameWidth / 2)), ((this.frameCenterY - 72) + (this.frameHeight / 2)));
     }
 
